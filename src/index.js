@@ -41,7 +41,8 @@ app.get('/', (req, res) => {
             products: '/api/products',
             posts: '/api/posts',
             stats: '/api/stats',
-            health: '/health'
+            health: '/health',
+            gitFlow: '/git-flow'
         }
     });
 });
@@ -126,6 +127,14 @@ app.use((req, res) => {
 });
 
 app.get('/health', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Server is running',
+        timestamp: new Date().toISOString()
+    });
+});
+
+app.get('/git-flow', (req, res) => {
     res.json({
         success: true,
         message: 'Server is running',
