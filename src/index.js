@@ -42,7 +42,6 @@ app.get('/', (req, res) => {
             posts: '/api/posts',
             stats: '/api/stats',
             health: '/health',
-            gitFlow: '/git-flow'
         }
     });
 });
@@ -134,13 +133,6 @@ app.get('/health', (req, res) => {
     });
 });
 
-app.get('/git-flow', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Server is running',
-        timestamp: new Date().toISOString()
-    });
-});
 
 // Start server
 app.listen(PORT, () => {
