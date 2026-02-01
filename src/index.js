@@ -139,3 +139,5 @@ app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
     console.log(`📍 Root API: http://localhost:${PORT}/`);
 });
+
+// remove test script
