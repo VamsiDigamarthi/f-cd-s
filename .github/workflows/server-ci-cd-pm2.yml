@@ -30,7 +30,7 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
-    environment: dev
+    environment: Dev
 
     steps:
       - uses: actions/checkout@v4
