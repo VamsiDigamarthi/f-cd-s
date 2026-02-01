@@ -11,6 +11,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -20,14 +21,10 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: |
-          cd server
-          npm install
+        run: npm install
 
       - name: Run tests
-        run: |
-          cd server
-          npm test
+        run: npm test
 
   cd:
     needs: ci
@@ -47,10 +44,11 @@ jobs:
 
       - name: Deploy to VM (PM2)
         run: |
-          ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
             cd /var/www/first-server
             git pull
             npm install
+            pm2 stop first-server || true
             pm2 restart first-server || pm2 start npm --name first-server -- start
             pm2 save
           EOF
