@@ -40,7 +40,8 @@ app.get('/', (req, res) => {
             users: '/api/users',
             products: '/api/products',
             posts: '/api/posts',
-            stats: '/api/stats'
+            stats: '/api/stats',
+            health: '/health'
         }
     });
 });
@@ -121,6 +122,14 @@ app.use((req, res) => {
     res.status(404).json({
         success: false,
         message: 'Route not found'
+    });
+});
+
+app.get('/health', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Server is running',
+        timestamp: new Date().toISOString()
     });
 });
 
