@@ -1,0 +1,56 @@
+name: Server CI/CD (PM2)
+
+on:
+  push:
+    branches:
+      - master
+  # pull_request:
+  #   branches:
+  #     - master
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: Run tests
+        run: |
+          cd server
+          npm test
+
+  cd:
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VM (PM2)
+        run: |
+          ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+            cd /var/www/first-server
+            git pull
+            npm install
+            pm2 restart first-server || pm2 start npm --name first-server -- start
+            pm2 save
+          EOF
